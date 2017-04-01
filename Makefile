@@ -1,2 +1,2 @@
 start:
-	DEBUG="application:*" npm run gulp -- server
+	DEBUG=*,-babel npm run gulp -- server
