@@ -26,11 +26,13 @@
     "babel-eslint": "7.1.1",
     "eslint": "3.17.1",
     "eslint-config-airbnb-base": "11.1.1",
-    "eslint-plugin-import": "2.2.0"
+    "eslint-plugin-import": "2.2.0",
+    "nodemon": "^1.11.0"
   },
   "scripts": {
     "babel-node": "babel-node",
     "gulp": "gulp",
+    "nodemon": "nodemon",
     "webpack": "webpack"
   }
 }
