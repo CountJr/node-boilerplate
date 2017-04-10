@@ -1,42 +1,41 @@
 import http from 'http';
 import url from 'url';
 import fs from 'fs';
-import chat from './chat.js';
+import { subscribe, publish } from './chat';
 // import User from './User';
 
 const sendFile = (fileName, res) => {
-    const fileStream = fs.createReadStream(fileName);
-    fileStream
-        .on('error', () => {
-            res.statusCode = 500;
-            res.end('server error');
-        })
-        .pipe(res)
-        .on('close', () => {
-            fileStream.destroy();
-        })
+  const fileStream = fs.createReadStream(fileName);
+  // debugger;
+  fileStream
+    .on('error', () => {
+      res.statusCode = 500;
+      res.end('server error');
+    })
+    .pipe(res)
+    .on('close', () => {
+      fileStream.destroy();
+    });
 };
 
 http.createServer((req, res) => {
-    switch (req.url) {
-        case '/':
-            sendFile("index.html", res);
-            break;
-        case '/subscribe':
-            chat.subscribe(req, res);
-            
-            break;
-        case '/publish':
-            chat.publish('...');
-            break;
-        default:
-            res.statusCode = 404;
-            res.end('Not found');
-            
-    }
+  switch (req.url) {
+    case '/':
+      sendFile('index.html', res);
+      break;
+    case '/subscribe':
+      subscribe(req, res);
+
+      break;
+    case '/publish':
+      publish('...');
+      break;
+    default:
+      res.statusCode = 404;
+      res.end('Not found');
+
+  }
 }).listen(8080);
-
-
 
 
 // const server = new http.Server((req, res) => {
@@ -48,7 +47,7 @@ http.createServer((req, res) => {
 //         res.statusCode = 404;
 //         res.end('page not found');
 //     }
-    
+// wew
 // });
 // // const vasja = new User('vasja');
 

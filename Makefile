@@ -1,2 +1,2 @@
 start:
-	DEBUG=*,-babel,-nodemon npm run nodemon -- --watch src --ext '.js,.pug' --exec babel-node -- src/server.js
+	DEBUG=*,-babel,-nodemon npm run babel-watch -- --inspect --watch src src/server.js
