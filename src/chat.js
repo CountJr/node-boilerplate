@@ -1,9 +1,13 @@
 let clients = [];
 
 export const subscribe = (req, res) => {
-  console.log('subscribe');
-
   clients.push(res);
+
+  console.log('subscribe', clients.length);
+
+  res.on('close', () => {
+    clients.splice(clients.indexOf(res), 1);
+  });
 };
 
 export const publish = (message) => {

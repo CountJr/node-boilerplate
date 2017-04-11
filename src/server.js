@@ -1,6 +1,7 @@
 import http from 'http';
 import url from 'url';
 import fs from 'fs';
+import path from 'path';
 import { subscribe, publish } from './chat';
 // import User from './User';
 
@@ -8,9 +9,11 @@ const sendFile = (fileName, res) => {
   const fileStream = fs.createReadStream(fileName);
   // debugger;
   fileStream
-    .on('error', () => {
+    .on('error', (err) => {
+      // console.log(__dirname);
+      // console.log(err);
       res.statusCode = 500;
-      res.end('server error');
+      res.end(`server error ${err}`);
     })
     .pipe(res)
     .on('close', () => {
@@ -21,15 +24,43 @@ const sendFile = (fileName, res) => {
 http.createServer((req, res) => {
   switch (req.url) {
     case '/':
-      sendFile('index.html', res);
+      sendFile(path.join(__dirname, 'index.html'), res);
       break;
+
     case '/subscribe':
       subscribe(req, res);
+      break;
 
+    case '/publish': {
+
+      console.log('...');
+
+      let body = '';
+
+      req
+        .on('readable', () => {
+          let chunk = req.read()
+          body += chunk ? chunk : '';
+          if (body.length > 1e4) {
+            res.statusCode = 413;
+            res.end('too big message');
+          }
+        })
+        .on('end', () => {
+          console.log(`--${body}--`);
+          try {
+            body = JSON.parse(body);
+          } catch (e) {
+            res.statusCode = 400;
+            res.end('bad request');
+            return;
+          }
+          publish(body.message);
+          res.end('ok');
+        });
+      // publish('...');
       break;
-    case '/publish':
-      publish('...');
-      break;
+    }
     default:
       res.statusCode = 404;
       res.end('Not found');
@@ -47,7 +78,7 @@ http.createServer((req, res) => {
 //         res.statusCode = 404;
 //         res.end('page not found');
 //     }
-// wew
+// wewcd
 // });
 // // const vasja = new User('vasja');
 
